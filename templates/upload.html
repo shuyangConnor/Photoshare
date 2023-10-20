@@ -1,0 +1,34 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+
+<head>
+    <title>Upload a photo!</title>
+</head>
+
+<body>
+    <div class="title">
+        <h1>Upload a photo to Photoshare</h1>
+    </div>
+    {% if albums %}
+    <h2>Here are your albums</h2>
+    <ul>
+        {% for album in albums %}
+        <li>{{album[0]}}<br>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if albums is none %}
+    <h2>You don't have albums so far</h2>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" action="/upload">
+        <label for="photo">Select photo:</label>
+        <input type="file" name="photo" required='true' /><br />
+        <label for="caption">Please caption:</label>
+        <input type="text" name="caption" required='true' /><br />
+        <label for="album">Enter the album you want to put this photo:</label>
+        <input type="text" name="album" required='true' /><br />
+        <label for="tags">Enter tags for this photo. Seperate each tag with a space:</label>
+        <input type="" name="tags" required='false' /><br />
+        <input type="submit" value="Upload" />
+    </form>
+</body>

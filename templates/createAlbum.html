@@ -1,0 +1,33 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+
+<head>
+  <title>Create an Album!</title>
+</head>
+
+<body>
+  <div class="title">
+    <h1>Create an Album</h1>
+  </div>
+  {% if albums %}
+  <h2>Here are your albums</h2>
+  <ul>
+    {% for album in albums %}
+    <li>{{album[0]}}<br>
+    </li>
+    <form method="POST" action="{{ url_for('delete_album') }}">
+      <input type="hidden" name="album_name" value="{{ album[0] }}">
+      <button type="submit" class="btn btn-primary">Delete</button>
+    </form>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if not albums %}
+  <h2>You don't have any albums so far</h2>
+  {% endif %}
+  <form method="post" enctype="multipart/form-data" action="{{ url_for('create_album') }}">
+    <label for="name">Album name:</label>
+    <input type="text" name="name" required='true' /><br />
+    <input type="submit" value="createAlbum" />
+  </form>
+  <a href='/'>Home</a>
+</body>

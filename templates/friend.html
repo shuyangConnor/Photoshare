@@ -1,0 +1,44 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+
+<head>
+  <title>Friends!</title>
+</head>
+
+
+<body>
+  <div class="title">
+    <h1>Friends</h1>
+  </div>
+  {% with messages = get_flashed_messages() %}
+  <h2 style="color: red;">{{ messages[0] }}</h2>
+  {% endwith %}
+  {% if friends %}
+  <h2>Here are your friends</h2>
+  <ul>
+    {% for friend in friends %}
+    <li>{{friend[0]}}<br>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if not friends %}
+  <h2>You don't have any friends so far</h2>
+  {% endif %}
+  {% if recommend_friends %}
+  <h2>Users you may want to add: </h2>
+  <ul>
+    {% for recommend_friend in recommend_friends %}
+    <li>{{recommend_friend[0]}} -- {{recommend_friend[1]}} of your friends' friend.</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <h2>No friends recommendation since you don't have friends so far.</h2>
+  {% endif %}
+  <h2>You can add new friend here</h2>
+  <form method="post" enctype="multipart/form-data" action="/friend">
+    <label for="friend_email">Friend email:</label>
+    <input type="text" name="friend_email" required='true' /><br />
+    <input type="submit" value="Add" />
+  </form>
+  <a href='/'>Home</a>
+</body>

@@ -1,0 +1,10 @@
+{% if users%}
+<h2>Here are the users that made the comment <span style="color:blue;">{{comment}}</span></h2>
+<ul>
+  {%for user in users%}
+  <li>{{user[0]}}</li>
+  {%endfor%}
+</ul>
+{% else %}
+<h2>Some guests, or no user have made the comment <span style="color:blue;">{{comment}}</span></h2>
+{% endif %}

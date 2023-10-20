@@ -1,0 +1,30 @@
+{%if not tags%}
+{%if not yours%}
+<h2>Here are all photos with tag <span style="margin-left: 20px; color: blue;">{{tag}}</span></h2>
+{% endif %}
+
+{%if yours%}
+<h2>Here are your photos with tag <span style="margin-left: 20px; color: blue;">{{tag}}</span></h2>
+{% endif %}
+{% endif %}
+
+{% if tags %}
+<h2>Here are all photos with tags{% for i in tags %}<span style="margin-left: 20px; color: blue;">{{i}}</span>{% endfor
+  %}</h2>
+{% endif %}
+
+<ul>
+  {% for photo in photos %}
+  <li>{{photo[2]}}<br>
+    <img src='data:image/jpg;base64, {{ base64.b64encode(photo[0]).decode("ascii") }}' style="width:200px" />
+    <h4>Tags: </h2>
+      <ul>
+        {% for tag in photo[3] %}
+        <li>{{tag[0]}}</li>
+        {% endfor %}
+      </ul>
+  </li>
+  {% endfor %}
+</ul>
+
+<a href='/'>Home</a>

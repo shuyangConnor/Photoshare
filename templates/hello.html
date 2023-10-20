@@ -1,0 +1,171 @@
+<!-- author ben lawson (balawson@bu.edu) -->
+<!doctype html>
+{% if message %}
+<h1>{{message}}!</h1>
+{% endif %}
+<title>Photoshare</title>
+{% if name %}
+<h1>Hello {{ name }}!</h1>
+{% endif %}
+
+{% if not photos %}
+<div>
+  <div style="float:left; width:400px">
+    <h2>Top ten active users on Photoshare:</h2>
+    {% if activeUsers %}
+    <ul>
+      {% for activeUser in activeUsers %}
+      <li>{{activeUser[0]}}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+
+
+  <div style="float:left; margin-left:calc(50% - 400px); width: 50%;">
+    <h2>Top 3 popular tags on Photoshare:</h2>
+    {% if popularTags %}
+    <ul>
+      {% for popularTag in popularTags %}
+      <li>{{popularTag[0]}}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <h4>You can search photos by tags. Seperate each tag with a space.</h4>
+    <form method="POST" action="/searchTags">
+      <input type="text" name="name">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    <h4>You can search users with comments as well! The users will be ordered by the number of times
+      they made that
+      comment.</h4>
+    <form method="POST" action="/searchComment">
+      <input type="text" name="comment">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+  </div>
+  <div style="clear: both"></div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+<h2 style="color: red;">{{ messages[0] }}</h2>
+{% endwith %}
+{% endif %}
+
+{% if photos %}
+<h2>Here are your photos (Clicking on the tag to see all your photos having that tag)</h2>
+<ul>
+  {% for photo in photos %}
+  <li>{{photo[2]}}<br>
+    <img src='data:image/jpg;base64, {{ base64.b64encode(photo[0]).decode("ascii") }}' style="width:200px" />
+    <br>
+    Tags:
+    {% if photo[3] %}
+    {% for tag in photo[3] %}
+    <a href="{{ url_for('viewYourPhotosWithTag', name=tag[0])}}">{{tag[0]}}</a>
+    {% endfor %}
+    {% endif %}
+    {% if not photo[3] %}
+    There is no tags.
+    {% endif %}
+    <form method="POST" action="{{ url_for('delete_photo') }}">
+      <input type="hidden" name="photo_id" value="{{ photo[1] }}">
+      <button type="submit" class="btn btn-primary">Delete</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if public_photos %}
+<h2>Here are all photos (Clicking on the tag to see all the photos having that tag)</h2>
+<a href="/alsoLike">You-May-Also-Like</a>
+<ul>
+
+  {% for public_photo in public_photos %}
+  <li>{{public_photo[2]}}<br>
+    <img src='data:image/jpg;base64, {{ base64.b64encode(public_photo[0]).decode("ascii") }}' style="width:200px" />
+    <br>
+    Tags:
+    {% if public_photo[5] %}
+    {% for tag in public_photo[5] %}
+    <a href="{{ url_for('viewAllPhotosWithTag', name=tag[0]) }}">{{tag[0]}}</a>
+    {% endfor %}
+    {% endif %}
+    {% if not public_photo[5] %}
+    There is no tags.
+    {% endif %}
+    {% if public_photo[3] %}
+    <br>{{ public_photo[3] }} likes<br>
+    {% endif %}
+    {% if not public_photo[3] %}
+    <br> 0 likes<br>
+    {% endif %}
+    Liked by:
+    {% for liked_user in public_photo[4][0] %}
+    {{ liked_user or "nobody" }}
+    {% endfor %}
+    <form method="POST" action="{{ url_for('like_photo') }}">
+      <input type="hidden" name="photo_id" value="{{ public_photo[1] }}">
+      <button type="submit" class="btn btn-primary">Like</button>
+    </form>
+    <form method="POST" action="{{ url_for('makeComment') }}">
+      <input type="hidden" name="photo_id" value="{{ public_photo[1] }}">
+      <input type="text" name="comment">
+      <button type="submit" class="btn btn-primary">Comment</button>
+    </form>
+    Comments:
+    {% if public_photo[6] %}
+    <ul>
+      {% for comment in public_photo[6] %}
+      <li>{{comment[0]}}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    No comments so far.
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if recommend_photos %}
+<h2>Based on your most frequent three tags: </h2>
+<ul>
+  {% for tag in tags %}
+  <li style="color:blue">{{tag[0]}}</li>
+  {% endfor %}
+</ul>
+<ul>
+  {% for recommend_photo in recommend_photos %}
+  <li>
+    {{recommend_photo[2]}}<br>
+    <img src='data:image/jpg;base64, {{ base64.b64encode(recommend_photo[0]).decode("ascii") }}' style="width:200px" />
+    <br>
+    Tags:
+    {% if recommend_photo[5] %}
+    {% for tag in recommend_photo[5] %}
+    <a href="{{ url_for('viewAllPhotosWithTag', name=tag[0]) }}">{{tag[0]}}</a>
+    {% endfor %}
+    {% endif %}
+    {% if not recommend_photo[5] %}
+    There is no tags.
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if message is none %}
+<p>You should <a href='/login'>login!</a></p>
+{% else %}
+<p> Go to <a href='/profile'>profile?</a></p>
+{% endif %}
+
+<ul>
+  <li><a href='/upload'>Upload a photo</a> </li>
+  <li><a href='/createAlbum'>Create an album</a> </li>
+  <li><a href='/friend'>Your friends</li>
+  <li><a href='/logout'>Logout</a></li>
+  <li><a href='/'>Home</a></li>
+</ul>
